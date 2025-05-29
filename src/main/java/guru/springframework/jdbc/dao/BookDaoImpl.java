@@ -1,11 +1,14 @@
 package guru.springframework.jdbc.dao;
 
+import guru.springframework.jdbc.domain.Author;
 import guru.springframework.jdbc.domain.Book;
 import org.springframework.stereotype.Component;
 
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.TypedQuery;
+
+import java.util.List;
 
 /**
  * Created by jt on 8/29/21.
@@ -16,6 +19,19 @@ public class BookDaoImpl implements BookDao {
 
     public BookDaoImpl(EntityManagerFactory emf) {
         this.emf = emf;
+    }
+
+    @Override
+    public List<Book> findAll() {
+        EntityManager em = getEntityManager();
+
+        try{
+            TypedQuery<Book> typedQuery = em.createNamedQuery("book_find_all", Book.class);
+
+            return typedQuery.getResultList();
+        } finally {
+            em.close();
+        }
     }
 
     @Override
@@ -44,8 +60,7 @@ public class BookDaoImpl implements BookDao {
     @Override
     public Book findBookByTitle(String title) {
         EntityManager em = getEntityManager();
-        TypedQuery<Book> query = em
-                .createQuery("SELECT b FROM Book b where b.title = :title", Book.class);
+        TypedQuery<Book> query = em.createNamedQuery("find_by_title", Book.class);
         query.setParameter("title", title);
         Book book = query.getSingleResult();
         em.close();
