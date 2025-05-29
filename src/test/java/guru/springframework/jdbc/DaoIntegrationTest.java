@@ -130,8 +130,9 @@ public class DaoIntegrationTest {
         author.setFirstName("John");
         author.setLastName("Thompson");
         Author saved = authorDao.saveNewAuthor(author);
-
+        Long id = saved.getId();
         assertThat(saved).isNotNull();
+        assertThat(id).isNotNull();
     }
 
     @Test
